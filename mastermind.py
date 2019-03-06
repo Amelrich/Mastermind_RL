@@ -1,6 +1,12 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
 from pygame import *
 import numpy.random as rd
 
+"""For now the human parameter which will permit someone to test the AI agent 
+    in the graphical environment is not configured yet.
+    Please let the human parameter remain to False""" 
 
 class Mastermind(object):
 
@@ -8,6 +14,7 @@ class Mastermind(object):
         self.human = human
         if human:
             self._build_mastermind()
+            
         self.list_action = self.create_list_action()
         self.combi = []
 
@@ -111,16 +118,31 @@ class Mastermind(object):
         
         s_ = str(action) + str(placed) + str(misplaced)
             
-        return (s_, self.reward(placed), self.if_won(placed))
+        return (s_, self.reward2(placed,misplaced,line), self.if_won(placed))
 
     def if_won(self, placed):
         return(placed==4)
         
-    def reward(self, placed):
-        if(placed==4):
+    def reward1(self, placed):
+        if placed == 4:
             return 0
-        else: 
+        else:
             return -1
+        
+    def reward2(self, placed,misplaced,line):
+        reward = -1
+        
+        if(placed==4):
+            reward = (10-line)*(10-line)
+            return reward
+        
+        if (placed == 0 and misplaced == 0):
+            return reward
+        else: 
+            reward += placed*0.1
+            reward += misplaced*0.05
+            return reward
+        
         
     def submit(self, prediction):
         

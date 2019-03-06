@@ -1,10 +1,5 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""
-Created on Tue Mar  5 18:16:37 2019
-
-@author: amaury
-"""
 
 from mastermind import Mastermind
 from AI_agent import Sarsa
@@ -20,7 +15,7 @@ def update(iteration_number):
         # RL choose action based on observation
         action = RL.choose_action(observation)
 
-        for line in range(10):     #may be (1,11)??
+        for line in range(10):
 
             # RL take action and get next observation and reward
             observation_, reward, won = env.step(action, line)
@@ -28,7 +23,7 @@ def update(iteration_number):
             # RL choose action based on next observation
             action_ = RL.choose_action(observation_)
             
-            path_sarsa.append( (observation, action, reward, observation_, action_, won) )
+            path_sarsa.append( [observation, action, reward, observation_, action_, won] )
 
             # swap observation and action
             observation = observation_
@@ -37,6 +32,9 @@ def update(iteration_number):
             # break while loop when end of this episode
             if won:
                 break
+        
+        if line == 9:
+            path_sarsa[9][5] = True
         
         nb_turns = len(path_sarsa)
         for i in range(nb_turns):
@@ -51,12 +49,14 @@ def update(iteration_number):
             RL.learn(s, a, r, s_, a_, terminal)
             
         
-        if episode >= 95000: 
+        if episode >= 990000: 
+            
             print(won, line)
 
     # end of game
 
 def save_table(table):
+    #A function to save the Q-table in a csv file
     file = open('learnt_table.csv', 'w')    
     line = ";".join(str(v) for v in table['init'])
     line = "init;" + line + "\n"
@@ -74,6 +74,6 @@ if __name__ == "__main__":
     env = Mastermind()
     RL = Sarsa()
     
-    update(100000)
+    update(1000000)
     
     print(time.time()-t1)
