@@ -4,6 +4,8 @@
 from mastermind import Mastermind
 from AI_agent import Sarsa
 import time
+import csv
+
 
 
 def update(iteration_number):
@@ -11,20 +13,16 @@ def update(iteration_number):
         # initial observation
         observation = env.reset()
         path_sarsa = []
-
+        
         # RL choose action based on observation
         action = RL.choose_action(observation)
 
         for line in range(10):
-
             # RL take action and get next observation and reward
             observation_, reward, won = env.step(action, line)
-
             # RL choose action based on next observation
             action_ = RL.choose_action(observation_)
-            
             path_sarsa.append( [observation, action, reward, observation_, action_, won] )
-
             # swap observation and action
             observation = observation_
             action = action_
@@ -48,16 +46,45 @@ def update(iteration_number):
             
             RL.learn(s, a, r, s_, a_, terminal)
             
-        
-        if episode >= 990000: 
+        #if episode >= 990000: 
+            #print(won, line)
             
-            print(won, line)
+def test_perf(iteration_number):
+    win_count = 0
+    turn_number = 0
+    
+    for episode in range(iteration_number):
+        # initial observation
+        observation = env.reset()
+        
+        # RL choose action based on observation
+        action = RL.choose_action(observation)
 
-    # end of game
+        for line in range(10):
+            # RL take action and get next observation and reward
+            observation_, reward, won = env.step(action, line)
+            # RL choose action based on next observation
+            action_ = RL.choose_action(observation_)
+            # swap observation and action
+            observation = observation_
+            action = action_
+
+            # break while loop when end of this episode
+            if won:
+                win_count += 1
+                turn_number += line
+                break
+            
+        #print(won, line)
+        
+    print('Ratio = ', (win_count/iteration_number)*100, '%')
+    print('In ', turn_number/win_count, 'turns')
+    return(None)
+    
 
 def save_table(table):
     #A function to save the Q-table in a csv file
-    file = open('learnt_table.csv', 'w')    
+    file = open('learnt_table_SARSA.csv', 'w')    
     line = ";".join(str(v) for v in table['init'])
     line = "init;" + line + "\n"
     file.write(line)
@@ -69,11 +96,25 @@ def save_table(table):
             line = str(i)+s + ";" + line + "\n"
             file.write(line)
 
+    file.close()
+            
+def open_table(file_name, newline = ''):
+    file = open(file_name, 'r')
+    q_temp = dict()
+    for row in csv.reader(file, delimiter = ';'):
+        q_temp[row[0]] = [float(row[k+1]) for k in range(1296)]
+    
+    file.close()
+    return(q_temp)
+    
+
 if __name__ == "__main__":
     t1 = time.time()
     env = Mastermind()
-    RL = Sarsa()
+    RL = Sarsa(q_table = open_table('learnt_table_SARSA.csv'), is_qtable = True)
     
-    update(1000000)
+    #update(1000000)
+    test_perf(10000)
+    #save_table(RL.q_table)
     
     print(time.time()-t1)
