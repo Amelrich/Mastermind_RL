@@ -57,8 +57,6 @@ class Sarsa(object):
                     new_policy.append(s)
             self.policy = new_policy
         
-        print(len(self.policy))
-        
         #Compute the argmax space
         val_qmax = state_action[ self.policy[0] ]
         qmax = [ self.policy[0] ]

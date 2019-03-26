@@ -109,7 +109,7 @@ class Mastermind(object):
                 r = self.screen.blit(self.palette, ((i+1)*30+20, line*35+70),(prediction[i]*30,0,30,30))
                 display.update(r)
             
-        placed,misplaced = self.submit(prediction)
+        placed,misplaced = self.feedback(prediction)
         
         if self.human:
             for e,c in enumerate([(255,0,0)]*placed+[(255,255,255)]*misplaced):
@@ -144,7 +144,7 @@ class Mastermind(object):
             return reward
         
         
-    def submit(self, prediction):
+    def feedback(self, prediction):
         
         #print(self.combi, prediction)
         try:

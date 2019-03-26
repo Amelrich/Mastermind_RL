@@ -12,8 +12,6 @@ def update(iteration_number):
     for episode in range(iteration_number):
         # initial observation
         observation = env.reset()
-        path_sarsa = []
-        
         # RL choose action based on observation
         action = RL.choose_action(observation)
 
@@ -21,33 +19,18 @@ def update(iteration_number):
             # RL take action and get next observation and reward
             observation_, reward, won = env.step(action, line)
             # RL choose action based on next observation
-            action_ = RL.choose_action(observation_)
-            path_sarsa.append( [observation, action, reward, observation_, action_, won] )
+            action_ = RL.choose_action(str(observation_))
+            # RL learn from this transition (s, a, r, s, a) ==> Sarsa
+            RL.learn(str(observation), action, reward, str(observation_), action_, won)
             # swap observation and action
             observation = observation_
             action = action_
-
             # break while loop when end of this episode
             if won:
                 break
-        
-        if line == 9:
-            path_sarsa[9][5] = True
-        
-        nb_turns = len(path_sarsa)
-        for i in range(nb_turns):
-            # RL learn from this transition (s, a, r, s, a) ==> Sarsa
-            s = path_sarsa[nb_turns - i - 1][0]
-            a = path_sarsa[nb_turns - i - 1][1]
-            r = path_sarsa[nb_turns - i - 1][2]
-            s_ = path_sarsa[nb_turns - i - 1][3]
-            a_ = path_sarsa[nb_turns - i - 1][4]
-            terminal = path_sarsa[nb_turns - i - 1][5]
+
             
-            RL.learn(s, a, r, s_, a_, terminal)
-            
-        #if episode >= 990000: 
-            #print(won, line)
+    return(None)
             
 def test_perf(iteration_number):
     win_count = 0
@@ -63,16 +46,16 @@ def test_perf(iteration_number):
         for line in range(10):
             # RL take action and get next observation and reward
             observation_, reward, won = env.step(action, line)
+            
             # RL choose action based on next observation
             action_ = RL.choose_action(observation_)
             # swap observation and action
             observation = observation_
             action = action_
-
             # break while loop when end of this episode
             if won:
                 win_count += 1
-                turn_number += line
+                turn_number += (line+1)
                 break
             
         #print(won, line)
@@ -84,7 +67,7 @@ def test_perf(iteration_number):
 
 def save_table(table):
     #A function to save the Q-table in a csv file
-    file = open('learnt_table_SARSA.csv', 'w')    
+    file = open('learnt_table_SARSA_passed.csv', 'w')    
     line = ";".join(str(v) for v in table['init'])
     line = "init;" + line + "\n"
     file.write(line)
@@ -111,10 +94,12 @@ def open_table(file_name, newline = ''):
 if __name__ == "__main__":
     t1 = time.time()
     env = Mastermind()
-    RL = Sarsa(q_table = open_table('learnt_table_SARSA.csv'), is_qtable = True)
+    RL = Sarsa()
     
-    #update(1000000)
-    test_perf(10000)
-    #save_table(RL.q_table)
+    for k in range(21):
+        print('After ',k*10000,' epochs')
+        test_perf(10000)
+        update(10000)
+        print('')
     
     print(time.time()-t1)
