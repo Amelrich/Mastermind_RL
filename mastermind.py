@@ -4,10 +4,6 @@
 from pygame import *
 import numpy.random as rd
 
-"""For now the human parameter which will permit someone to test the AI agent 
-    in the graphical environment is not configured yet.
-    Please let the human parameter remain to False""" 
-
 class Mastermind(object):
 
     def __init__(self, human = False):
