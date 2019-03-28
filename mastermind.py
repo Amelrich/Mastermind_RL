@@ -14,12 +14,16 @@ class Mastermind(object):
         self.human = human
         if human:
             self._build_mastermind()
-            
+        
+        #This list will contain the int representation of combination
+        #Each combination [x,y,z,t] is represented by an int between 0 and 1295
         self.list_action = self.create_list_action()
+        
+        #The current combination
         self.combi = []
 
     def _build_mastermind(self):
-
+        #Build a graphic Mastermind game
         self.screen = display.set_mode((280,550))
         display.set_caption('MasterMind')
 
@@ -42,6 +46,7 @@ class Mastermind(object):
         
 
     def reset(self):
+        #reset the environement
         if self.human:
             self.screen.blit(self.mmbg,(0,0))
             self.screen.blit(self.palette, self.palet_rect)
@@ -52,7 +57,8 @@ class Mastermind(object):
         return('init')
     
     def create_list_action(self):
-        #For a tissue to wipe your bleeding eyes, please come to Fayolle building 11.30.31
+        #For a tissue to wipe your bleeding eyes, please come to my room: Fayolle building 11.30.31
+        #Joke aside, this function compute the int representation of each combination
         res = dict()
         num = 0
         for i in range(6):
@@ -84,9 +90,12 @@ class Mastermind(object):
 
 
     def step(self, action, line):
+        #This method is pretty complex due to the possibility to generate a game: computer agent vs human
+        #In a first reading we recommend to skip the part starting with "if self.human"
+        #These conditions are here solely for the graphical mode
         
         if self.human:
-            if len(self.combi == 0):
+            if len(self.combi) == 0:
                 self.human_agent()
                 
             while (self.ready != True):
@@ -94,7 +103,8 @@ class Mastermind(object):
                 if ev.type == MOUSEBUTTONUP:
                     if self.go_rect.collidepoint(ev.pos):
                         self.ready=True
-                    
+        
+        #Compute a random combination at the beginning of the game if the computer is playing against itself       
         elif len(self.combi) == 0:
             self.combi = [rd.randint(0,5), rd.randint(0,5), rd.randint(0,5), rd.randint(0,5)]
         
@@ -117,19 +127,22 @@ class Mastermind(object):
                 display.update(r)
         
         s_ = str(action) + str(placed) + str(misplaced)
-            
+        
+        #Choose the reward you prefer
         return (s_, self.reward2(placed,misplaced,line), self.if_won(placed))
 
     def if_won(self, placed):
         return(placed==4)
         
     def reward1(self, placed):
+        #classical reward
         if placed == 4:
             return 0
         else:
             return -1
         
     def reward2(self, placed,misplaced,line):
+        #Second reward taking in account number of correct placed and misplaced pegs.
         reward = -1
         
         if(placed==4):
@@ -145,8 +158,7 @@ class Mastermind(object):
         
         
     def feedback(self, prediction):
-        
-        #print(self.combi, prediction)
+        #A function which take the secret code (self.combi), a prediction and return the couple (placed,misplaced) 
         try:
             a,b = zip(*[(a,b) for a,b in zip(self.combi, prediction) if a!=b])
             a   = list(a)

@@ -82,6 +82,7 @@ def save_table(table):
     file.close()
             
 def open_table(file_name, newline = ''):
+    #A function to open a Q-table stored in a csv file
     file = open(file_name, 'r')
     q_temp = dict()
     for row in csv.reader(file, delimiter = ';'):
@@ -92,14 +93,20 @@ def open_table(file_name, newline = ''):
     
 
 if __name__ == "__main__":
-    t1 = time.time()
     env = Mastermind()
     RL = Sarsa()
     
-    for k in range(21):
+    n_epochs = 100000
+    #update(n_epochs) #Remove the comment mode to directly train the agent
+    #save_table(RL.q_table) #Remove the comment mode to save the table 
+    
+    perf_episode = n_epochs//10000
+    
+    for k in range(perf_episode + 1):
+        t1 = time.time()
         print('After ',k*10000,' epochs')
         test_perf(10000)
         update(10000)
+        print(time.time()-t1)
         print('')
     
-    print(time.time()-t1)

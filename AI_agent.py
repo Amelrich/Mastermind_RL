@@ -16,7 +16,10 @@ class Sarsa(object):
         #gamma and learning rate as seen in the 6th and 7th lecture
         self.lr = learning_rate
         self.gamma = gamma
+        #The policy will contain all the still possible combination for the secret code
         self.policy = []
+        
+        #A table to compute the code with its int representation. See mastermind.py for more explanation
         self.action_representation = self.create_list_action()
         
         #We now build the Q-table
@@ -41,9 +44,12 @@ class Sarsa(object):
         
         
     def choose_action(self, observation):
+        #This function chooses an action to do
         
         state_action = self.q_table[observation]
         
+        #First we update the policy, ie the combination still possible, 
+        #taking in account the environement feedback.
         if observation == 'init':
             self.policy = [i for i in range(1296)]
             
@@ -57,7 +63,7 @@ class Sarsa(object):
                     new_policy.append(s)
             self.policy = new_policy
         
-        #Compute the argmax space
+        #Now compute the argmax space with the policy
         val_qmax = state_action[ self.policy[0] ]
         qmax = [ self.policy[0] ]
         
@@ -74,6 +80,7 @@ class Sarsa(object):
         
     
     def learn(self, s, a, r, s_, a_, terminal):
+        #A method to update the Q-table w.r.t SARSA algorithm.
         
         q_predict = self.q_table[s][a]
         if terminal:
@@ -85,8 +92,7 @@ class Sarsa(object):
         
         
     def feedback(self, combi1, combi2):
-        
-        #print(self.combi, prediction)
+        #The feedback function. See mastermind.py for more explanation
         try:
             a,b = zip(*[(a,b) for a,b in zip(combi1, combi2) if a!=b])
             a   = list(a)
@@ -99,7 +105,8 @@ class Sarsa(object):
         return 4-len(b),len(b)-len(a)
     
     def create_list_action(self):
-        #For a tissue to wipe your bleeding eyes, please come to Fayolle building 11.30.31
+        #See mastermind.py for more explanation
+        #For a tissue to wipe your bleeding eyes, please come to my room: Fayolle building, 11.30.31
         res = dict()
         num = 0
         for i in range(6):
