@@ -94,6 +94,8 @@ def open_table(file_name, newline = ''):
 
 if __name__ == "__main__":
     env = Mastermind()
+    #RL = Sarsa(q_table = open_table(file_name="learnt_table_SARSA_passed.csv"), is_qtable=True) 
+    #Remove the comment mode if you want to use an already saved Q-table.
     RL = Sarsa()
     
     n_epochs = 100000
@@ -109,4 +111,6 @@ if __name__ == "__main__":
         update(10000)
         print(time.time()-t1)
         print('')
+    
+    save_table(RL.q_table)
     
