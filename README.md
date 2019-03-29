@@ -8,24 +8,34 @@ In this paper we are interested in solving a master- mind game with reinforcemen
 
 
 
-### About the code 
+## About the code 
 All methods and functions are commented. Here more explanations about how the code is organized. The code is structured in three principal python files:
 
-##### mastermind.py
+#### mastermind.py
 This module provide a class to build a graphic (or not) mastermind interface.
 
-##### AI_agent.py
+#### AI_agent.py
 This module implement a SARSA method to solve master game by training an agent. 
 
-The agent 
-Be aware that the state space is not the space of combination. We built a space state by concatenating the combination and the feedback provided by the environement. For the beginning we created an initial state 'init'.
+The agent maintains policy vector which contain every still possible secret code candidates. At each turn it puts away all impossible combination.
+About the Q-table: be aware that the state space is not the space of combination. We built a space state by concatenating the combination and the feedback provided by the environement. For the beginning we created an initial state 'init'.
+
+This module contain three principal methods.
+- One to init the Q-table
+- One to update the policy vector and to choose an action w.r.t Q-table.
+- One to update the Q-table i.e. to learn.
+
+#### main.py
+This file contains many functions:
+- One to play games in order to train the agent
+- One to test the current Q-table
+- One to save the Q-table
+- One to load an already Q-table
+At the end of the file you will find some actions. The code is configured to run 100.000 training epochs and to give you every 10.000 epochs the average number of turns it requires to solve the game.
 
 
-This module contain three
 
-
-
-### References:
+## References:
 [1] Donald E. Kunth. The Computer as Master Mind, J. Recreational Mathematics, Vol.9(1), 1976-77.
 
 [2] W. Lu, J. Yang, H. Chu. Playing Mastermind Game by using Reinforcement Learning, 2017 First IEEE International Conference on Robotic Computing
