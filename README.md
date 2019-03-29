@@ -33,7 +33,8 @@ This file contains many functions:
 - One to load an already Q-table
 At the end of the file you will find some actions. The code is configured to run 100.000 training epochs and to give you every 10.000 epochs the average number of turns it requires to solve the game.
 
-
+### Other comments
+The file Without_past_conception allows to train an agent which only choose the next action based on the Q-table. In fact in this version there is no policy vector. Here the agent does not win systematically. After training it, the agent is able to win 20% to 30% of every games. Beware that here the agent will require a lot of training (2 millions epochs) which could take few hours.
 
 ## References:
 [1] Donald E. Kunth. The Computer as Master Mind, J. Recreational Mathematics, Vol.9(1), 1976-77.
