@@ -34,6 +34,8 @@ This file contains many functions:
 At the end of the file you will find some actions. The code is configured to run 100.000 training epochs and to give you every 10.000 epochs the average number of turns it requires to solve the game.
 
 ### Other comments
+The EnvDemonstration.ipynb pipeline allows a user to test our agent with a graphical mastermind environnement. Please note that to run this notebook you need csv file containing the Q-table. This can be done by running the python file main.py. It is initially configured to train the agent through 100.000 before saving the table, which will few minutes.
+
 The file Without_past_conception allows to train an agent which only choose the next action based on the Q-table. In fact in this version there is no policy vector. Here the agent does not win systematically. After training it, the agent is able to win 20% to 30% of every games. Beware that here the agent will require a lot of training (2 millions epochs) which could take few hours.
 
 ## References:
